@@ -47,23 +47,37 @@ func main() {
 	journalColl := bookStoreDB.Collection("journalColl")
 	journalResult, err := journalColl.InsertMany(ctx, []interface{}{
 		bson.D{
-			{Key: "title", Value:"Daily Journal"},
+			{Key: "title", Value: "Daily Journal"},
 			{Key: "description", Value: "It is a daily journal to your desk"},
-			{Key: "price", Value:3.99},
+			{Key: "price", Value: 3.99},
 		},
 		bson.D{
-			{Key: "title", Value:"Go blog"},
+			{Key: "title", Value: "Go blog"},
 			{Key: "description", Value: "Golang blog with useful info"},
-			{Key: "price", Value:2.49},
+			{Key: "price", Value: 2.49},
 		},
 		bson.D{
-			{Key: "title", Value:"Programmer"},
+			{Key: "title", Value: "Programmer"},
 			{Key: "description", Value: "All about programming"},
-			{Key: "price", Value:5.99},
+			{Key: "price", Value: 5.99},
 		},
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(journalResult.InsertedIDs)
+
+	// read all the documents in journal collection
+	cursor, err := journalColl.Find(ctx, bson.M{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cursor.Close(ctx)
+	var journals []bson.M
+	if err := cursor.All(ctx, &journals); err != nil {
+		log.Fatal(err)
+	}
+	for _, j := range journals {
+		fmt.Println(j)
+	}
 }
