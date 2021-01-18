@@ -32,7 +32,7 @@ func main() {
 	// create database "bookstore"
 	bookStoreDB := client.Database("bookstore")
 
-	// create one collection (simple schema)
+	// create collection with insertOne()
 	booksColl := bookStoreDB.Collection("booksColl")
 	_, err = booksColl.InsertOne(ctx, bson.D{
 		{Key: "title", Value: "Golang programming"},
@@ -42,4 +42,28 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// create collection with insertMany()
+	journalColl := bookStoreDB.Collection("journalColl")
+	journalResult, err := journalColl.InsertMany(ctx, []interface{}{
+		bson.D{
+			{Key: "title", Value:"Daily Journal"},
+			{Key: "description", Value: "It is a daily journal to your desk"},
+			{Key: "price", Value:3.99},
+		},
+		bson.D{
+			{Key: "title", Value:"Go blog"},
+			{Key: "description", Value: "Golang blog with useful info"},
+			{Key: "price", Value:2.49},
+		},
+		bson.D{
+			{Key: "title", Value:"Programmer"},
+			{Key: "description", Value: "All about programming"},
+			{Key: "price", Value:5.99},
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(journalResult.InsertedIDs)
 }
