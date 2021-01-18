@@ -28,4 +28,18 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(dbs)
+
+	// create database "bookstore"
+	bookStoreDB := client.Database("bookstore")
+
+	// create one collection (simple schema)
+	booksColl := bookStoreDB.Collection("booksColl")
+	_, err = booksColl.InsertOne(ctx, bson.D{
+		{Key: "title", Value: "Golang programming"},
+		{Key: "author", Value: "Peter Peterson"},
+		{Key: "tags", Value: bson.A{"golang", "go programming", "go mongo"}},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 }
