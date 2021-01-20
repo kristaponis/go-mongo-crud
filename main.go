@@ -73,6 +73,8 @@ func main() {
 		log.Fatal(err)
 	}
 	defer cursor.Close(ctx)
+
+	// load documents No. 1
 	var journals []bson.M
 	if err := cursor.All(ctx, &journals); err != nil {
 		log.Fatal(err)
@@ -80,4 +82,20 @@ func main() {
 	for _, j := range journals {
 		fmt.Println(j)
 	}
+
+	// load documents No. 2
+	for cursor.Next(ctx) {
+		var j bson.M
+		if err := cursor.Decode(&j); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(j)
+	}
+
+	// load one document
+	var jn bson.M
+	if err := journalColl.FindOne(ctx, bson.M{}).Decode(jn); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(jn)
 }
